@@ -5,28 +5,26 @@ use Psr\Http\Message\ServerRequestInterface;
 use Nyholm\Psr7\Response;
 use Arachne\Async\Scheduler;
 
-class HomeController
+final class HomeController
 {
-    public function index(ServerRequestInterface $request, Scheduler $scheduler)
+    public function index(ServerRequestInterface $request, Scheduler $scheduler = null)
     {
+        // If Scheduler is not auto-injected, create local.
+        if ($scheduler === null) {
+            $scheduler = new Scheduler();
+        }
+
+        // Demo: schedule a small fiber task
         $scheduler->create(function(Scheduler $s) {
-            // do small chunk of work, then yield
-            // Example: compute, log or wait for some IO adapter
-            // Simulate stepping:
-            // first step
-            // -> yield
+            // do step 1
             $s->yieldControl();
-
-            // continued second step
-            // -> yield again
+            // do step 2
             $s->yieldControl();
-
-            return 'done';
+            return "ok";
         });
 
-        // If you want tasks to run immediately in this request:
         $scheduler->run();
 
-        return new Response(200, [], 'Hello from Arachne + Fibers (demo)');
+        return new Response(200, ['Content-Type' => 'text/plain'], "Welcome to Arachne!");
     }
 }

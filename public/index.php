@@ -1,13 +1,53 @@
 <?php
+declare(strict_types=1);
 
-// Autoload all Composer-managed libraries and classes
 require __DIR__ . '/../vendor/autoload.php';
 
-// Load environment variables from a `.env` file using phpdotenv
-// This keeps sensitive information like API keys and credentials out of your code.
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7Server\ServerRequestCreator;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Arachne\Container\ContainerFactory;
+use FastRoute\RouteCollector;
+use function FastRoute\simpleDispatcher;
+use Arachne\Http\Kernel;
+use Arachne\Http\Middleware\FastRouteMiddleware;
+use Arachne\Http\Middleware\ErrorMiddleware;
+use Arachne\Async\Scheduler;
 
-// Placeholder for starting app logic
-// Typically launches router, handle requests, etc.
-echo "Hello Spiders from Arachne!";
+// Create container
+$container = \Arachne\Container\ContainerFactory::create([
+    // override or add definitions if needed
+]);
+
+// Build PSR-7 ServerRequest from globals
+$psr17Factory = new Psr17Factory();
+$creator = new ServerRequestCreator(
+    $psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory
+);
+$request = $creator->fromGlobals();
+
+// Build FastRoute dispatcher
+$dispatcher = simpleDispatcher(function(RouteCollector $r) {
+    // register routes here. Example:
+    $r->get('/', [\Arachne\Controllers\HomeController::class, 'index']);
+    // e.g. $r->get('/users/{id:\d+}', [\Arachne\Controllers\UserController::class, 'show']);
+});
+
+// Register Dispatcher and middleware in container (simple closure defs)
+$container->set(FastRoute\Dispatcher::class, $dispatcher);
+
+// Minimum middleware queue
+$middlewareQueue = [
+    new ErrorMiddleware(null), // or $container->get(LoggerInterface::class)
+    new FastRouteMiddleware($dispatcher, $container)
+];
+
+// Kernel
+$kernel = new Kernel($container, $middlewareQueue);
+
+// Now handle request
+$response = $kernel->handle($request);
+
+// Emit response
+$emitter = new SapiEmitter();
+$emitter->emit($response);
