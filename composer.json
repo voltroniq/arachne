@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Voltroniq\\Arachne\\": "src/"
+            "Arachne\\": "src/"
         }
     },
         "autoload-dev": {

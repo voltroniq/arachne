@@ -14,8 +14,11 @@ use Arachne\Http\Middleware\FastRouteMiddleware;
 use Arachne\Http\Middleware\ErrorMiddleware;
 use Arachne\Async\Scheduler;
 
+// Create scheduler
+$scheduler = new Scheduler();
+
 // Create container
-$container = \Arachne\Container\ContainerFactory::create([
+$container = ContainerFactory::create([
     // override or add definitions if needed
 ]);
 
@@ -32,19 +35,20 @@ $dispatcher = simpleDispatcher(function(RouteCollector $r) {
     $routes($r);
 });
 
-// Register Dispatcher and middleware in container (simple closure defs)
+// Register Dispatcher in container (optional)
 $container->set(FastRoute\Dispatcher::class, $dispatcher);
 
 // Minimum middleware queue
 $middlewareQueue = [
-    new ErrorMiddleware(null), // or $container->get(LoggerInterface::class)
-    new FastRouteMiddleware($dispatcher, $container)
+    new ErrorMiddleware(null),
+    // Pass Scheduler here
+    new FastRouteMiddleware($dispatcher, $container, $scheduler)
 ];
 
 // Kernel
 $kernel = new Kernel($container, $middlewareQueue);
 
-// Now handle request
+// Handle request
 $response = $kernel->handle($request);
 
 // Emit response
