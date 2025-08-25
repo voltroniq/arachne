@@ -54,54 +54,38 @@ final class FastRouteMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // Get the URI path from the incoming request (e.g., "/home")
         $uri = $request->getUri()->getPath();
-
-        // Get the HTTP method (e.g., "GET", "POST") from the incoming request
         $method = $request->getMethod();
 
-        // Dispatch the request to the route dispatcher to match a route
         $routeInfo = $this->dispatcher->dispatch($method, rawurldecode($uri));
 
-        // Handle the different outcomes of the route dispatch
         switch ($routeInfo[0]) {
-            // Route not found: If no matching route is found, return a 404 error
             case Dispatcher::NOT_FOUND:
                 return new Response(404, [], 'Not Found');
-            
-            // Method not allowed: If the method (GET/POST) is not allowed on this route, return a 405 error
+
             case Dispatcher::METHOD_NOT_ALLOWED:
                 return new Response(405, [], 'Method Not Allowed');
-            
-            // Route found: If a matching route is found, process the handler
+
             case Dispatcher::FOUND:
-                // The route handler could be a controller method (e.g., [ControllerClass, 'method'])
-                $handlerDef = $routeInfo[1]; // [ControllerClass, 'method']
-                $vars = $routeInfo[2];       // Route parameters (like {id: 42})
+                // <-- handlerDef is defined HERE
+                $handlerDef = $routeInfo[1]; // e.g., [ControllerClass, 'method']
+                $vars = $routeInfo[2];
 
-                // If the handler is a controller method, resolve the controller from the container
                 if (is_array($handlerDef) && is_string($handlerDef[0])) {
-                    // Fetch the controller from the container
                     $controller = $this->container->get($handlerDef[0]);
-
-                    // Get the method name to call on the controller
                     $methodName = $handlerDef[1];
 
-                    // Call the controller method with the request and scheduler as arguments
-                    // If no scheduler is passed, it will be null
+                    // Pass optional Scheduler
                     return $controller->$methodName($request, $this->scheduler);
                 }
 
-                // If the handler is a callable (e.g., closure), invoke it directly
                 if (is_callable($handlerDef)) {
                     return $handlerDef($request, $vars);
                 }
 
-                // If the handler is invalid (neither a controller nor callable), return a 500 error
                 return new Response(500, [], 'Invalid route handler');
         }
 
-        // If an unexpected error occurs during routing, return a 500 error response
         return new Response(500, [], 'Unexpected routing error');
     }
 }

@@ -1,7 +1,8 @@
 <?php
-use FastRoute\RouteCollector;
 
-return function(RouteCollector $r) {
-    $r->get('/', [\Arachne\Controllers\HomeController::class, 'index']);
-    // Add more routes...
+use FastRoute\RouteCollector;
+use Arachne\Controllers\HomeController;
+
+return function (RouteCollector $r) {
+    $r->addRoute('GET', '/', [HomeController::class, 'index']);
 };

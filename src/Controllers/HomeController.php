@@ -1,30 +1,25 @@
 <?php
+declare(strict_types=1);
+
 namespace Arachne\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Nyholm\Psr7\Response;
 use Arachne\Async\Scheduler;
+use Nyholm\Psr7\Response;
 
 final class HomeController
 {
-    public function index(ServerRequestInterface $request, Scheduler $scheduler = null)
+    public function index(ServerRequestInterface $request, ?Scheduler $scheduler = null): Response
     {
-        // If Scheduler is not auto-injected, create local.
-        if ($scheduler === null) {
-            $scheduler = new Scheduler();
+        // Beginner-friendly async example
+        if ($scheduler) {
+            $scheduler->enqueue(fn() => error_log('Async task running!'));
         }
 
-        // Demo: schedule a small fiber task
-        $scheduler->create(function(Scheduler $s) {
-            // do step 1
-            $s->yieldControl();
-            // do step 2
-            $s->yieldControl();
-            return "ok";
-        });
-
-        $scheduler->run();
-
-        return new Response(200, ['Content-Type' => 'text/plain'], "Welcome to Arachne!");
+        return new Response(
+            200,
+            [],
+            '<h1>Welcome to Arachne</h1>'
+        );
     }
 }
