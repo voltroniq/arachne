@@ -19,7 +19,7 @@ Arachne is a **lightweight, async-first PHP micro-framework** built on **PHP Fib
 - **Modular & Extensible**: Optional adapters for AMPHP, ReactPHP, Swoole, Revolt.  
 - **Dependency Injection**: Clean, minimal DI container using PHP-DI.  
 - **Middleware Support**: Easily add custom request/response handling.  
-- **Open-source MIT License**: Free to use, with optional monetization possibilities (starter kits, support).
+- **Open-source MIT License**: Free to use, with optional monetization possibilities (starter kits, support).  
 
 ---
 
@@ -29,7 +29,7 @@ Arachne is a **lightweight, async-first PHP micro-framework** built on **PHP Fib
 - Provides a **modern, clean developer experience** with minimal boilerplate.  
 - Fully **compatible with other PHP frameworks** and PSR-based libraries.  
 - Encourages **modular and reusable code**.  
-- Ideal for **learning async PHP**, microservices, and high-performance APIs.
+- Ideal for **learning async PHP**, microservices, and high-performance APIs.  
 
 ---
 
@@ -39,7 +39,7 @@ Arachne is a **lightweight, async-first PHP micro-framework** built on **PHP Fib
 - **Background jobs** and lightweight concurrent tasks.  
 - **Realtime applications** (chat, notifications) without Node.js.  
 - Rapid prototyping for small to medium projects.  
-- Learning **Fibers and modern PHP 8+ async patterns**.
+- Learning **Fibers and modern PHP 8+ async patterns**.  
 
 ---
 
@@ -58,3 +58,32 @@ php -S localhost:8000 -t public
 
 # Visit in your browser
 http://localhost:8000
+```
+
+## Contributing
+
+We welcome contributions from the community! Please follow these steps:
+
+1. **Fork the repository**.  
+2. **Create a new feature branch**:  
+   ```bash
+   git checkout -b feature/YourFeature
+   ```
+3. **Commit your changes:**:
+   ```bash
+   git commit -m "Add your feature"
+   ```
+4. **Push to your branch:**:
+   ```bash
+   git push origin feature/YourFeature
+   ```
+5. **Open a Pull Request on GitHub**.
+Contributions that improve async examples, documentation, or starter templates are especially appreciated.
+
+## License
+
+MIT License — free to use, modify, and distribute.
+
+## Contact
+
+For questions, support, or feedback, reach out to [Voltroniq](mailto:voltroniq.dev@gmail.com).
