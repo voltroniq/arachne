@@ -1,57 +1,36 @@
 <?php
-
-// middleware maps routes (FastRoute dispatcher) to a PSR-15 compatible callable.
-// Keeps the router/mapping logic separate and PSR-15-compatible.
+declare(strict_types=1);
 
 namespace Arachne\Http\Middleware;
 
+use FastRoute\Dispatcher;
+use Nyholm\Psr7\Response;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use FastRoute\Dispatcher;
-use Nyholm\Psr7\Response;
-use Psr\Container\ContainerInterface;
+use Arachne\Async\Scheduler;
 
 /**
- * Middleware for routing requests using FastRoute.
- * It dispatches the request based on URI path and HTTP method,
- * and invokes the corresponding controller or handler.
+ * Middleware for routing HTTP requests using FastRoute.
  */
 final class FastRouteMiddleware implements MiddlewareInterface
 {
-    /** @var Dispatcher $dispatcher FastRoute's Dispatcher for route dispatching */
     private Dispatcher $dispatcher;
-
-    /** @var ContainerInterface $container The DI container to resolve controller dependencies */
     private ContainerInterface $container;
+    private ?Scheduler $scheduler;
 
-    /** @var ?\Arachne\Async\Scheduler $scheduler Optional scheduler for asynchronous tasks */
-    private ?\Arachne\Async\Scheduler $scheduler;
-
-    /**
-     * FastRouteMiddleware constructor.
-     * Initializes dispatcher, container, and optional scheduler.
-     * 
-     * @param Dispatcher $dispatcher FastRoute dispatcher to handle routing.
-     * @param ContainerInterface $container DI container to resolve controller dependencies.
-     * @param ?\Arachne\Async\Scheduler $scheduler Optional scheduler to handle async tasks.
-     */
-    public function __construct(Dispatcher $dispatcher, ContainerInterface $container, ?\Arachne\Async\Scheduler $scheduler = null)
-    {
-        $this->dispatcher = $dispatcher; // Assign dispatcher for routing requests
-        $this->container = $container; // Assign container for fetching controllers
-        $this->scheduler = $scheduler; // Optionally assign scheduler for async processing
+    public function __construct(
+        Dispatcher $dispatcher,
+        ContainerInterface $container,
+        ?Scheduler $scheduler = null
+    ) {
+        $this->dispatcher = $dispatcher;
+        $this->container = $container;
+        $this->scheduler = $scheduler;
     }
 
-    /**
-     * Processes the incoming request and dispatches it to the appropriate route handler.
-     * 
-     * @param ServerRequestInterface $request The HTTP request to be processed.
-     * @param RequestHandlerInterface $handler The request handler that handles the request.
-     * 
-     * @return ResponseInterface Returns a response object with the result of the route handling.
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $uri = $request->getUri()->getPath();
@@ -62,20 +41,17 @@ final class FastRouteMiddleware implements MiddlewareInterface
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 return new Response(404, [], 'Not Found');
-
             case Dispatcher::METHOD_NOT_ALLOWED:
                 return new Response(405, [], 'Method Not Allowed');
-
             case Dispatcher::FOUND:
-                // <-- handlerDef is defined HERE
                 $handlerDef = $routeInfo[1]; // e.g., [ControllerClass, 'method']
-                $vars = $routeInfo[2];
+                $vars = $routeInfo[2];       // route parameters
 
                 if (is_array($handlerDef) && is_string($handlerDef[0])) {
                     $controller = $this->container->get($handlerDef[0]);
                     $methodName = $handlerDef[1];
 
-                    // Pass optional Scheduler
+                    // Call controller method with $request and optional $scheduler
                     return $controller->$methodName($request, $this->scheduler);
                 }
 
