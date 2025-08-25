@@ -20,16 +20,16 @@ jobs:
         uses: shivammathur/setup-php@v4
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, json, ctype, curl, sockets, pcntl
+          extensions: mbstring, json, ctype, curl, pcntl, sockets
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
+      - name: Generate optimized autoload
+        run: composer dump-autoload -o
+
       - name: Copy environment file
         run: cp .env.example .env
 
-      - name: Generate autoload
-        run: composer dump-autoload -o
-
-      - name: Run PHPUnit tests
+      - name: Run PHPUnit
         run: vendor/bin/phpunit --configuration phpunit.xml
