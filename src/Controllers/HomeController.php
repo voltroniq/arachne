@@ -9,11 +9,18 @@ use Nyholm\Psr7\Response;
 
 final class HomeController
 {
+    /**
+     * Homepage
+     *
+     * @param ServerRequestInterface $request
+     * @param Scheduler|null $scheduler Optional async scheduler
+     * @return Response
+     */
     public function index(ServerRequestInterface $request, ?Scheduler $scheduler = null): Response
     {
-        // Beginner-friendly async example
+        // Example async task
         if ($scheduler) {
-            $scheduler->enqueue(fn() => error_log('Async task running!'));
+            $scheduler->enqueue(fn() => error_log('Async task running'));
         }
 
         return new Response(

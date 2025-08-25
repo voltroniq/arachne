@@ -1,1 +1,1 @@
-{"version":2,"defects":[],"times":{"Tests\\Unit\\ExampleTest::testBasic":0.001,"Arachne\\Tests\\Controllers\\HomeControllerTest::testIndexReturnsWelcomeResponse":0.006}}
+{"version":2,"defects":[],"times":{"Tests\\Unit\\ExampleTest::testBasic":0.001,"Arachne\\Tests\\Controllers\\HomeControllerTest::testIndexReturnsWelcomeResponse":0.006,"HomeControllerTest::testIndexReturnsWelcomeResponse":0.036}}
