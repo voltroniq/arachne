@@ -8,6 +8,11 @@
             "Voltroniq\\Arachne\\": "src/"
         }
     },
+        "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Voltroniq",
@@ -27,5 +32,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^12.3"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
