@@ -60,6 +60,8 @@ php -S localhost:8000 -t public
 http://localhost:8000
 ```
 
+---
+
 ## Contributing
 
 We welcome contributions from the community! Please follow these steps:
@@ -80,9 +82,13 @@ We welcome contributions from the community! Please follow these steps:
 5. **Open a Pull Request on GitHub**.
 Contributions that improve async examples, documentation, or starter templates are especially appreciated.
 
+---
+
 ## License
 
 MIT License — free to use, modify, and distribute.
+
+---
 
 ## Contact
 
