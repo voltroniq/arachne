@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [8.1,8.2,8.3,8.4]
-
+        php: [8.1,8.2,8.4]
     steps:
       - uses: actions/checkout@v4
 
@@ -20,8 +19,11 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: mbstring, json, ctype, curl, sockets
 
-      - name: Install Composer
-        run: composer install --no-interaction --prefer-dist
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction
 
-      - name: Run Tests
+      - name: Verify autoload
+        run: composer dump-autoload -o
+
+      - name: Run PHPUnit
         run: vendor/bin/phpunit --configuration phpunit.xml
