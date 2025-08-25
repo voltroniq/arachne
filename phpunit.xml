@@ -14,5 +14,6 @@
     <php>
         <!-- Escape & as &amp; -->
         <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED"/>
+        <directory>./tests</directory>
     </php>
 </phpunit>
