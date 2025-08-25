@@ -5,8 +5,14 @@
          verbose="true">
     <testsuites>
         <testsuite name="Unit">
-            <directory>./tests/Unit</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
+
     <coverage processUncoveredFiles="false" />
+
+    <php>
+        <!-- Escape & as &amp; -->
+        <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED"/>
+    </php>
 </phpunit>
