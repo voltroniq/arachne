@@ -28,9 +28,8 @@ $request = $creator->fromGlobals();
 
 // Build FastRoute dispatcher
 $dispatcher = simpleDispatcher(function(RouteCollector $r) {
-    // register routes here. Example:
-    $r->get('/', [\Arachne\Controllers\HomeController::class, 'index']);
-    // e.g. $r->get('/users/{id:\d+}', [\Arachne\Controllers\UserController::class, 'show']);
+    $routes = require __DIR__ . '/../config/routes.php';
+    $routes($r);
 });
 
 // Register Dispatcher and middleware in container (simple closure defs)
