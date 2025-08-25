@@ -1,0 +1,8 @@
+# Ignore all log files
+*.log
+
+# Ignore dependency directories
+vendor/
+
+# Ignore environment variable files
+.env
