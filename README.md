@@ -1,6 +1,6 @@
-# Arachne — Lightweight Async PHP Micro-Framework
+# Arachne — Native PHP Async Micro‑Framework
 
-Arachne is a **lightweight, async-first PHP micro-framework** built on **PHP Fibers** (PHP 8.3+). It provides a modern, developer-friendly platform for building high-performance web applications, microservices, and async tasks, while remaining fully **PSR-compliant**.
+Arachne is a **native PHP async-first micro-framework** built on **PHP Fibers** (PHP 8.3+). It provides a modern, developer-friendly platform for building high-performance web applications, microservices, and async tasks, while remaining fully **PSR-compliant**.
 
 ---
 
