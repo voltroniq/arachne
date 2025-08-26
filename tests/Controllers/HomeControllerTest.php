@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Tests\Controllers;
+
 use PHPUnit\Framework\TestCase;
 use Arachne\Controllers\HomeController;
 use Arachne\Async\Scheduler;
